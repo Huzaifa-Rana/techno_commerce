@@ -14,7 +14,7 @@ jobs:
       - name: Connect to Server via SSH and Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: huzaifarana.tech
+          host: 66.29.153.80
           username: huzakdhg
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22

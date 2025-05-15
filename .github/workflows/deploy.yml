@@ -11,13 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Connect to Server via SSH and Deploy
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 66.29.153.80
-          username: huzakdhg
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 21098
+          host: ${{ secrets.SSH_HOST }} # 66.29.153.80
+          username: ${{ secrets.SSH_USER }} # huzakdhg
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # contents of your private key
+          port: ${{ secrets.SSH_PORT }} # 21098
           script: |
             cd /home/huzakdhg/techno_commerce
 
@@ -25,22 +28,22 @@ jobs:
             git pull origin master
 
             echo "Installing Composer dependencies..."
-            /usr/local/bin/php /opt/cpanel/composer/bin/composer install --no-interaction --prefer-dist --optimize-autoloader
+            /opt/cpanel/ea-php82/root/usr/bin/php /opt/cpanel/composer/bin/composer install --no-interaction --prefer-dist --optimize-autoloader
 
             echo "Running migrations..."
-            /usr/local/bin/php artisan migrate --force
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan migrate --force
 
             echo "Seeding database..."
-            /usr/local/bin/php artisan db:seed --force
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan db:seed --force
 
-            echo "Clearing cache and config..."
-            /usr/local/bin/php artisan config:clear
-            /usr/local/bin/php artisan cache:clear
-            /usr/local/bin/php artisan config:cache
-            /usr/local/bin/php artisan route:cache
-            /usr/local/bin/php artisan view:cache
+            echo "Clearing cache and rebuilding config..."
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan config:clear
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan cache:clear
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan config:cache
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan route:cache
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan view:cache
 
             echo "Restarting queue workers..."
-            /usr/local/bin/php artisan queue:restart
+            /opt/cpanel/ea-php82/root/usr/bin/php artisan queue:restart
 
-            echo "Deployment completed."
+            echo "✅ Deployment completed successfully."

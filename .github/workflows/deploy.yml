@@ -17,7 +17,7 @@ jobs:
           host: 66.29.153.80
           username: huzakdhg
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: 21098
           script: |
             cd /home/huzakdhg/techno_commerce
 
